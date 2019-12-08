@@ -6,7 +6,7 @@
 /*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 14:17:54 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/11/30 18:04:18 by aguiller         ###   ########.fr       */
+/*   Updated: 2019/12/08 13:51:50 by aguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,30 @@ void tomass(int fd, int **mass)
 
 void find_minimal(int **mass)
 {
-	
+	int i;
+	int min_y;
+	int	min_x;
+
+	min_x = 9999;
+	min_y = 9999;
+	i = 0;
+	while (i < 8)
+	{
+		if ((i + 1) % 2 == 1 && (*mass)[i] < min_x)
+			min_x = (*mass)[i];
+		if((i + 1) % 2 == 0 && (*mass)[i] < min_y)
+			min_y = (*mass)[i];
+		i++;
+	}
+	i = 0;
+	while (i < 8)
+	{
+		if ((i + 1) % 2 == 1)
+			(*mass)[i] = (*mass)[i] - min_x;
+		else
+			(*mass)[i] = (*mass)[i] - min_y;
+		i++;
+	}
 }
 int make_minimal(t_tetra **head)
 {
@@ -78,11 +101,12 @@ int make_minimal(t_tetra **head)
 	t_tetra	*now;
 	
 	now = *head;
-	while (now->next != NULL)
+	while (now != NULL)
 	{
 		mass = (int*)now->data;
-		
-		
+		find_minimal(&mass);
+		now = now->next;
+		mass = NULL;
 	}
 	return (1);
 	
@@ -91,12 +115,14 @@ int make_minimal(t_tetra **head)
 int second_check(int fd, int count)
 {
 	t_tetra	*head;
-	
+
 	head = NULL;
 	if (read_to_mass(fd, count, &head) == 0)
 		return (0);
 	close(fd);
 	if (make_minimal(&head) == 0)
+		return (0);
+	if (diagonal_check(&head) == 0)
 		return (0);
 	return (1);
 }

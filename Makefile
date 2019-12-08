@@ -6,11 +6,12 @@
 #    By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/06 22:26:44 by aguiller          #+#    #+#              #
-#    Updated: 2019/11/30 17:05:17 by aguiller         ###   ########.fr        #
+#    Updated: 2019/12/08 12:47:45 by aguiller         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = main.c get_next_line.c first_check.c second_check.c tetra_func.c
+SRC = main.c get_next_line.c first_check.c second_check.c tetra_func.c\
+third_check.c
 
 NAME = fillit
 
