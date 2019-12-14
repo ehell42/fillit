@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   second_check.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 14:17:54 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/12/08 13:51:50 by aguiller         ###   ########.fr       */
+/*   Updated: 2019/12/14 17:50:51 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-int read_to_mass(int fd, int count, t_tetra **head)
+int		read_to_mass(int fd, int count, t_tetra **head)
 {
 	t_tetra *now;
 	int		*mass;
 	char	s;
-	
+
 	s = 'A';
 	if (!(mass = (int*)malloc(sizeof(int) * 8)))
-			return (0);
+		return (0);
 	if (count > 0)
 	{
 		tomass(fd, &mass);
@@ -39,7 +39,7 @@ int read_to_mass(int fd, int count, t_tetra **head)
 	return (1);
 }
 
-void tomass(int fd, int **mass)
+void	tomass(int fd, int **mass)
 {
 	char	*s;
 	int		i;
@@ -68,7 +68,7 @@ void tomass(int fd, int **mass)
 		ft_strdel(&s);
 }
 
-void find_minimal(int **mass)
+void	find_minimal(int **mass)
 {
 	int i;
 	int min_y;
@@ -81,7 +81,7 @@ void find_minimal(int **mass)
 	{
 		if ((i + 1) % 2 == 1 && (*mass)[i] < min_x)
 			min_x = (*mass)[i];
-		if((i + 1) % 2 == 0 && (*mass)[i] < min_y)
+		if ((i + 1) % 2 == 0 && (*mass)[i] < min_y)
 			min_y = (*mass)[i];
 		i++;
 	}
@@ -95,11 +95,12 @@ void find_minimal(int **mass)
 		i++;
 	}
 }
-int make_minimal(t_tetra **head)
+
+int		make_minimal(t_tetra **head)
 {
 	int		*mass;
 	t_tetra	*now;
-	
+
 	now = *head;
 	while (now != NULL)
 	{
@@ -109,10 +110,9 @@ int make_minimal(t_tetra **head)
 		mass = NULL;
 	}
 	return (1);
-	
 }
 
-int second_check(int fd, int count)
+int		second_check(int fd, int count)
 {
 	t_tetra	*head;
 
@@ -124,5 +124,6 @@ int second_check(int fd, int count)
 		return (0);
 	if (diagonal_check(&head) == 0)
 		return (0);
+	solver(&head);
 	return (1);
 }

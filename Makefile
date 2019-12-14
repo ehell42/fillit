@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+         #
+#    By: ehell <ehell@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/06 22:26:44 by aguiller          #+#    #+#              #
-#    Updated: 2019/12/08 12:47:45 by aguiller         ###   ########.fr        #
+#    Updated: 2019/12/14 18:57:22 by ehell            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = main.c get_next_line.c first_check.c second_check.c tetra_func.c\
-third_check.c
+third_check.c solver.c find_min_square.c koord_func.c
 
 NAME = fillit
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tetra_func.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 15:46:44 by aguiller          #+#    #+#             */
-/*   Updated: 2019/11/30 17:47:17 by aguiller         ###   ########.fr       */
+/*   Updated: 2019/12/14 17:31:36 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_tetra		*tetra_new(void const *content, char a, size_t content_size)
 	}
 	else
 	{
+		new_list->c = a;
 		new_list->data = (void*)malloc(content_size);
 		if (new_list->data == NULL)
 		{
@@ -49,7 +50,8 @@ t_tetra		*tetra_add(t_tetra *alst, t_tetra *new)
 	return (NULL);
 }
 
-t_tetra		*tetra_add_content(t_tetra *new_list, void const *content, size_t content_size)
+t_tetra		*tetra_add_content(t_tetra *new_list, void const *content,
+	size_t content_size)
 {
 	if (content == NULL)
 	{

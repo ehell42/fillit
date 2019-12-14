@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   third_check.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/07 12:08:13 by aguiller          #+#    #+#             */
-/*   Updated: 2019/12/08 15:01:28 by aguiller         ###   ########.fr       */
+/*   Updated: 2019/12/14 22:33:42 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ int		intequ(int *s1, int *s2)
 	return (1);
 }
 
-int cleanmass(int **massive)
+int		cleanmass(int **massive)
 {
 	int i;
 
 	i = 0;
-	while(i < 19)
+	while (i < 19)
 	{
 		free((massive)[i]);
 		i++;
@@ -90,5 +90,5 @@ int		diagonal_check(t_tetra **head)
 			return (0);
 		now = now->next;
 	}
-	return (cleanmass(massive));
+	return (1);
 }

@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   first_check.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexzudin <alexzudin@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/02 20:55:56 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/11/12 14:53:08 by alexzudin        ###   ########.fr       */
+/*   Updated: 2019/12/14 13:19:23 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-int checkline(char *line, int *strok, int *reshotki, int *count)
+int	checkline(char *line, int *strok, int *reshotki, int *count)
 {
 	if (line[0])
 		(*strok)++;
-	else 
-	{	
+	else
+	{
 		if (*strok != 4)
 			return (0);
 		*strok = 0;
@@ -28,7 +28,8 @@ int checkline(char *line, int *strok, int *reshotki, int *count)
 	}
 	return (1);
 }
-int lastcheck(int i, char **line)
+
+int	lastcheck(int i, char **line)
 {
 	if (i != 4 && (*line)[0])
 		return (0);
@@ -36,7 +37,7 @@ int lastcheck(int i, char **line)
 	return (1);
 }
 
-int absolutlylastcheck(int strok, int reshotki, int *count)
+int	absolutlylastcheck(int strok, int reshotki, int *count)
 {
 	if (strok != 4)
 		return (0);
@@ -48,7 +49,7 @@ int absolutlylastcheck(int strok, int reshotki, int *count)
 	return (1);
 }
 
-int first_check(int fd, int *count)
+int	first_check(int fd, int *count)
 {
 	int		reshotki;
 	char	*line;
@@ -67,7 +68,7 @@ int first_check(int fd, int *count)
 		{
 			if (line[i] != '#' && line[i] != '.')
 				return (0);
-			if(line[i] == '#')
+			if (line[i] == '#')
 				reshotki++;
 			i++;
 		}

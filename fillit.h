@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   fillit.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/23 08:19:05 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/12/08 13:04:23 by aguiller         ###   ########.fr       */
+/*   Updated: 2019/12/14 22:34:09 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#ifndef FILLIT_H
 
-# define GET_NEXT_LINE_H
+# define FILLIT_H
 
 # include <sys/types.h>
 # include <sys/uio.h>
@@ -20,30 +20,53 @@
 # include "libft/libft.h"
 # define BUFF_SIZE 8
 
-int		get_next_line(const int fd, char **line);
-int		first_check(int fd, int *c);
-int 	second_check(int fd, int count);
+int							get_next_line(const int fd, char **line);
+int							first_check(int fd, int *c);
+int							second_check(int fd, int count);
 
-typedef struct 				s_tetraminos
+typedef struct				s_tetraminos
 {
-	void 			*data;
-	char			c;
-	struct s_tetraminos 	*next;
+	void					*data;
+	char					c;
+	struct s_tetraminos		*next;
 
 }							t_tetra;
-typedef struct              s_koord
+struct						s_koord
 {
-    int                     x;
-    int                     y;
-    int                     nbr;
+	int						x;
+	int						y;
+	int						nbr;
 };
-t_tetra		*tetra_add(t_tetra *alst, t_tetra *new);
-t_tetra		*tetra_new(void const *content, char a, size_t content_size);
-void 	tomass(int fd, int **mass);
-int 	read_to_mass(int fd, int count, t_tetra **head);
-int 	make_minimal(t_tetra **head);
-void	find_minimal(int **mass);
-int		diagonal_check(t_tetra **head);
+t_tetra						*tetra_add(t_tetra *alst, t_tetra *new);
+t_tetra						*tetra_new(void const *content,
+	char a, size_t content_size);
+void						tomass(int fd, int **mass);
+int							read_to_mass(int fd, int count, t_tetra **head);
+int							make_minimal(t_tetra **head);
+void						find_minimal(int **mass);
+int							diagonal_check(t_tetra **head);
+char						**create_square(int n);
+void						print_square(int n, char **square);
+int							find_min(t_tetra *elem);
+void						solver(t_tetra **elem);
+int							check_clash(char **square,
+	t_tetra **tmp, struct s_koord my_coord);
+void						push_figure(char ***square,
+	const int *elem, char c, struct s_koord my_coord);
+void						new_square(char ***square,
+	struct s_koord *my_coord);
+void						req_function(char ***square,
+	t_tetra **tmp, struct s_koord *my_coord, t_tetra **head);
+int							find_min_square(char ***square,
+	t_tetra **elem, int n);
+int							find_max_y(char **square, int x, int nbr);
+struct s_koord				*push_x0_y_change(struct s_koord *my_coord);
+struct s_koord				*push_x_change_y(char **square,
+	struct s_koord *my_coord);
+struct s_koord				*push_x0_change_y(char **square,
+	struct s_koord *my_coord);
+void						free_letter_sq(char ***square,
+	char c, struct s_koord my_coord);
 # define I_PIECE (int [8]){0,0,0,1,0,2,0,3}
 # define IH_PIECE (int [8]){0,0,1,0,2,0,3,0}
 # define O_PIECE (int [8]){0,0,1,0,0,1,1,1}
@@ -63,7 +86,5 @@ int		diagonal_check(t_tetra **head);
 # define SR_PIECE (int [8]){0,0,0,1,1,1,1,2}
 # define Z_PIECE (int [8]){0,0,1,0,1,1,2,1}
 # define ZR_PIECE (int [8]){1,0,0,1,1,1,0,2}
-
-
 
 #endif
