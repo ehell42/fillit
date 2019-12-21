@@ -6,7 +6,7 @@
 /*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/23 08:19:05 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/12/14 22:34:09 by ehell            ###   ########.fr       */
+/*   Updated: 2019/12/21 19:27:56 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void						push_figure(char ***square,
 	const int *elem, char c, struct s_koord my_coord);
 void						new_square(char ***square,
 	struct s_koord *my_coord);
-void						req_function(char ***square,
-	t_tetra **tmp, struct s_koord *my_coord, t_tetra **head);
+int							req_function(char ***square,
+	t_tetra **tmp, struct s_koord *my_coord);
 int							find_min_square(char ***square,
 	t_tetra **elem, int n);
 int							find_max_y(char **square, int x, int nbr);
@@ -67,6 +67,10 @@ struct s_koord				*push_x0_change_y(char **square,
 	struct s_koord *my_coord);
 void						free_letter_sq(char ***square,
 	char c, struct s_koord my_coord);
+struct s_koord				*change_x_change_y(char **square, struct
+	s_koord *my_coord);
+int							try_function(char ***square, t_tetra **tmp,
+	struct s_koord *my_coord);
 # define I_PIECE (int [8]){0,0,0,1,0,2,0,3}
 # define IH_PIECE (int [8]){0,0,1,0,2,0,3,0}
 # define O_PIECE (int [8]){0,0,1,0,0,1,1,1}

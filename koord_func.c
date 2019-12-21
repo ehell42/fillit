@@ -6,7 +6,7 @@
 /*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/14 13:15:31 by ehell             #+#    #+#             */
-/*   Updated: 2019/12/14 22:34:46 by ehell            ###   ########.fr       */
+/*   Updated: 2019/12/21 18:04:41 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,14 @@ struct s_koord	*push_x0_y_change(struct s_koord *my_coord)
 struct s_koord	*push_x_change_y(char **square, struct s_koord *my_coord)
 {
 	my_coord->x = my_coord->x + 1;
+	while ((my_coord->y = find_max_y(square, my_coord->x, my_coord->nbr)) < 0
+		&& my_coord->x < my_coord->nbr)
+		my_coord->x += 1;
+	return (my_coord);
+}
+
+struct s_koord	*change_x_change_y(char **square, struct s_koord *my_coord)
+{
 	while ((my_coord->y = find_max_y(square, my_coord->x, my_coord->nbr)) < 0
 		&& my_coord->x < my_coord->nbr)
 		my_coord->x += 1;

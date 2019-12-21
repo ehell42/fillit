@@ -6,7 +6,7 @@
 /*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 18:49:41 by ehell             #+#    #+#             */
-/*   Updated: 2019/12/14 23:35:10 by ehell            ###   ########.fr       */
+/*   Updated: 2019/12/21 20:20:48 by ehell            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,64 +71,91 @@ void	new_square(char ***square, struct s_koord *my_coord)
 	my_coord->x = 0;
 	my_coord->y = 0;
 }
-/*
-void	req_function(char ***square, t_tetra **tmp,
-	struct s_koord *my_coord, t_tetra **head)
-{
-	int	check;
 
+int	try_function(char ***square, t_tetra **tmp,
+	struct s_koord *my_coord)
+{
+	int				check;
+	struct s_koord	temp;
+
+	temp.x = my_coord->x;
+	temp.y = my_coord->y;
 	check = check_clash(*square, tmp, *my_coord);
+//	ft_putstr("here");
+//	ft_putnbr(check);
 	if (check == 1)
 	{
-		push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);
-		if ((*tmp)->next)
-			req_function(square, &(*tmp)->next,
-				push_x0_change_y(*square, my_coord), head);///////////////
+	//	push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);
+	//	print_square(my_coord->nbr, *square);
+	//	ft_putchar('\n');
+	//	free_letter_sq(square, (*tmp)->c, *my_coord);
+		return (1);
 	}
 	else if (check == -2 ||
 		(check == -1 && my_coord->x == my_coord->nbr))
 	{
-		if ((*head)->c == 'A')
-		{
-			new_square(square, my_coord);
-			tmp = head;
-			req_function(square, tmp, my_coord, head);
-		}
-		else
-		{
-			free_letter_sq(square, (*head)->c, *my_coord);//изменить координаты текущей фигуры
-			req_function(square, tmp, my_coord, head);//передать нужный хедер
-		}
+		my_coord->x = temp.x;
+		my_coord->y = temp.y;
+		return (0);
 	}
 	else if (check == 0)
-		req_function(square, tmp, push_x0_y_change(my_coord), head);
+		try_function(square, tmp, push_x0_y_change(my_coord));
 	else if (check == -1)
-		req_function(square, tmp, push_x_change_y(*square, my_coord), head);
-}*/
-
-void	req_function(char ***square, t_tetra **tmp,
-	struct s_koord *my_coord, t_tetra **head)
-{
-	if ((*tmp)->next)
-	{
-		req_function(square, (*tmp)->next, my_coord, tmp);
-	}
-	else
-	{
-		/*размещаю последний*/	
-		if (/*не поставили*/ && /*header->c != A*/)
-		{
-			tmp = head; 
-			free_letter_sq();
-			/*сместили координаты*/
-		}
-		else
-		{
-			new_square();
-		}
-	}
-	
+		try_function(square, tmp, push_x_change_y(*square, my_coord));
+	return (0);
 }
+
+int	req_function(char ***square, t_tetra **tmp,
+	struct s_koord *my_coord)
+{
+	int k = 0;
+static int i = 0;
+i++;
+if (i > 30)
+{
+	ft_putstr("iterat\n");
+	return (1);
+}
+//	ft_putchar((*tmp)->c);
+	if ((*tmp))
+	{
+		if ((*tmp)->next && try_function(square, tmp, my_coord) == 1)	//если есть следующий и я могу поставить текущий
+		{
+		//	ft_putchar((*tmp)->c);
+			push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);	//ставлю текущий
+		//	print_square(my_coord->nbr, *square);
+			if ((k = try_function(square, &(*tmp)->next, my_coord)) == 0)
+			{
+			//	ft_putchar((*tmp)->c);
+				ft_putnbr(k);
+				free_letter_sq(square, (*tmp)->c, *my_coord);
+				return (req_function(square, tmp, change_x_change_y(*square, my_coord)));//меняю текущий
+			}
+			else
+			{
+				ft_putnbr(k);
+			//	ft_putchar((*tmp)->c);
+				return (req_function(square, &(*tmp)->next, my_coord));
+			}
+		}
+		else if (try_function(square, tmp, my_coord) == 0 && (*tmp)->c == 'A')	//не могу поставить первый -> меняю его площадь
+		{
+		//	print_square(my_coord->nbr, *square);
+		//	ft_putchar((*tmp)->c);
+			new_square(square, my_coord);
+			return (req_function(square, tmp, my_coord));
+		}
+		else if (try_function(square, tmp, my_coord) == 1)
+			{
+				ft_putstr("here\n");
+				push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);
+				return (1);
+			}
+	//	ft_putchar((*tmp)->c);
+	}
+	return (0);
+}
+
 
 int		find_min_square(char ***square, t_tetra **elem, int n)
 {
@@ -141,7 +168,7 @@ int		find_min_square(char ***square, t_tetra **elem, int n)
 	my_koord.y = 0;
 	if (*tmp)
 	{
-		req_function(square, tmp, &my_koord, elem);
+		req_function(square, tmp, &my_koord);
 	}
 	return (my_koord.nbr);
 }
