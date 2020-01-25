@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   solver.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 17:40:53 by ehell             #+#    #+#             */
-/*   Updated: 2019/12/14 22:33:17 by ehell            ###   ########.fr       */
+/*   Updated: 2020/01/24 18:52:18 by aguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ char	**create_square(int n)
 	int		j;
 
 	i = 0;
-	squar = (char**)malloc(sizeof(char *) * (n + 1));
+	squar = (char**)malloc(sizeof(char**) * (n + 1));
 	while (i < n)
 	{
-		squar[i] = (char*)malloc(sizeof(char) * (n + 1));
+		squar[i] = (char*)malloc(sizeof(char*) * (n + 1));
 		i++;
 	}
 	i = 0;
@@ -37,7 +37,7 @@ char	**create_square(int n)
 		squar[i][j] = '\n';
 		i++;
 	}
-	squar[n] = NULL;
+	squar[i] = NULL;
 	return (squar);
 }
 
@@ -79,15 +79,39 @@ int		find_min(t_tetra *elem)
 	return (i);
 }
 
+int		make_minimal(t_tetra **head)
+{
+	int		*mass;
+	t_tetra	*now;
+
+	now = *head;
+	while (now != NULL)
+	{
+		mass = (int*)now->data;
+		find_minimal(&mass);
+		now = now->next;
+		mass = NULL;
+	}
+	return (1);
+}
+
 void	solver(t_tetra **elem)
 {
 	char	**square;
 	int		n;
+	int		i;
 	t_tetra	*tmp;
 
 	tmp = *elem;
 	n = find_min(tmp);
 	square = create_square(n);
-	n = find_min_square(&square, elem, n);
-	print_square(n, square);
+	n = find_min_square(&square, elem);
+	print_square(size(square), square);
+	i = 0;
+	while (i < n)
+	{
+		free((square)[i]);
+		i++;
+	}
+	free(square);
 }

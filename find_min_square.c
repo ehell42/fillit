@@ -3,37 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   find_min_square.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 18:49:41 by ehell             #+#    #+#             */
-/*   Updated: 2019/12/21 20:20:48 by ehell            ###   ########.fr       */
+/*   Updated: 2019/12/26 22:00:18 by aguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
-#include <stdio.h>
 
-int		check_clash(char **square, t_tetra **tmp, struct s_koord my_coord)
+int		check_clash(char **square, t_tetra **tmp, int x, int y)
 {
 	int	i;
+	int n;
 	int	*elem;
 
 	elem = (int*)((*tmp)->data);
-	/*
-	 * 0 - столкновение,
-	 * 1 - все верно,
-	 * -1 - не проходит по высоте
-	 * -2 - не проходит по ширине
-	 * n - высота переданного прямоугольника
-	 */
+	n = size(square);
 	i = 0;
-	if (my_coord.nbr - (my_coord.y) < elem[7] + 1 || my_coord.y == -1)
-		return (-1);
-	while (i < 4 && (square[elem[2 * i + 1]
-		+ my_coord.y][elem[2 * i] + my_coord.x]) != '\n')
+	while (i < 4)
 	{
-		if ((square[elem[2 * i + 1] +
-			my_coord.y][elem[2 * i] + my_coord.x]) != '.')
+		if (x + elem[2 * i] >= n || y + elem[2 * i + 1] >= n)
+			return (0);
+		i++;
+	}
+	i = 0;
+	while (i < 4 && (square[elem[2 * i + 1] + y][elem[2 * i] + x]) != '\n')
+	{
+		if ((square[elem[2 * i + 1] + y][elem[2 * i] + x]) != '.')
 			return (0);
 		i++;
 	}
@@ -42,133 +39,81 @@ int		check_clash(char **square, t_tetra **tmp, struct s_koord my_coord)
 	return (1);
 }
 
-void	push_figure(char ***square, const int *elem,
-	char c, struct s_koord my_coord)
+int		req_function(char ***square, t_tetra **tmp, int x, int y)
 {
-	int	i;
+	int	check;
 
-	i = 0;
-	while (i < 4)
-	{
-		(*square)[elem[2 * i + 1] + my_coord.y][elem[2 * i] + my_coord.x] = c;
-		i++;
-	}
-}
-
-void	new_square(char ***square, struct s_koord *my_coord)
-{
-	int	i;
-
-	i = 0;
-	while (i < my_coord->nbr)
-	{
-		free((*square)[i]);
-		i++;
-	}
-	free(*square);
-	my_coord->nbr = my_coord->nbr + 1;
-	*square = create_square(my_coord->nbr);
-	my_coord->x = 0;
-	my_coord->y = 0;
-}
-
-int	try_function(char ***square, t_tetra **tmp,
-	struct s_koord *my_coord)
-{
-	int				check;
-	struct s_koord	temp;
-
-	temp.x = my_coord->x;
-	temp.y = my_coord->y;
-	check = check_clash(*square, tmp, *my_coord);
-//	ft_putstr("here");
-//	ft_putnbr(check);
+	check = check_clash(*square, tmp, x, y);
 	if (check == 1)
 	{
-	//	push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);
-	//	print_square(my_coord->nbr, *square);
-	//	ft_putchar('\n');
-	//	free_letter_sq(square, (*tmp)->c, *my_coord);
-		return (1);
-	}
-	else if (check == -2 ||
-		(check == -1 && my_coord->x == my_coord->nbr))
-	{
-		my_coord->x = temp.x;
-		my_coord->y = temp.y;
-		return (0);
-	}
-	else if (check == 0)
-		try_function(square, tmp, push_x0_y_change(my_coord));
-	else if (check == -1)
-		try_function(square, tmp, push_x_change_y(*square, my_coord));
-	return (0);
-}
-
-int	req_function(char ***square, t_tetra **tmp,
-	struct s_koord *my_coord)
-{
-	int k = 0;
-static int i = 0;
-i++;
-if (i > 30)
-{
-	ft_putstr("iterat\n");
-	return (1);
-}
-//	ft_putchar((*tmp)->c);
-	if ((*tmp))
-	{
-		if ((*tmp)->next && try_function(square, tmp, my_coord) == 1)	//если есть следующий и я могу поставить текущий
+		push_figure(square, tmp, x, y);
+		if (specialagent(square, tmp, x, y) == 0)
 		{
-		//	ft_putchar((*tmp)->c);
-			push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);	//ставлю текущий
-		//	print_square(my_coord->nbr, *square);
-			if ((k = try_function(square, &(*tmp)->next, my_coord)) == 0)
+			free_letter(square, (*tmp)->c, size(*square));
+			if (koord_changer(&x, &y, size(*square)) == 1)
+				return (req_function(square, tmp, x, y));
+			if ((*tmp)->c == 'A')
 			{
-			//	ft_putchar((*tmp)->c);
-				ft_putnbr(k);
-				free_letter_sq(square, (*tmp)->c, *my_coord);
-				return (req_function(square, tmp, change_x_change_y(*square, my_coord)));//меняю текущий
+				new_square(square, size(*square) + 1);
+				return (req_function(square, tetra_head(tmp), x, y));
 			}
 			else
-			{
-				ft_putnbr(k);
-			//	ft_putchar((*tmp)->c);
-				return (req_function(square, &(*tmp)->next, my_coord));
-			}
+				return (0);
 		}
-		else if (try_function(square, tmp, my_coord) == 0 && (*tmp)->c == 'A')	//не могу поставить первый -> меняю его площадь
-		{
-		//	print_square(my_coord->nbr, *square);
-		//	ft_putchar((*tmp)->c);
-			new_square(square, my_coord);
-			return (req_function(square, tmp, my_coord));
-		}
-		else if (try_function(square, tmp, my_coord) == 1)
-			{
-				ft_putstr("here\n");
-				push_figure(square, (int *)(*tmp)->data, (*tmp)->c, *my_coord);
-				return (1);
-			}
-	//	ft_putchar((*tmp)->c);
+		return (1);
 	}
-	return (0);
+	else
+		return (newguy(square, tmp, x, y));
 }
 
+int		newguy(char ***square, t_tetra **tmp, int x, int y)
+{
+	int a;
+	int n;
 
-int		find_min_square(char ***square, t_tetra **elem, int n)
+	n = size(*square);
+	a = koord_changer(&x, &y, n);
+	if (a == 1)
+	{
+		return (req_function(square, tmp, x, y));
+	}
+	else
+	{
+		if ((*tmp)->c == 'A')
+		{
+			new_square(square, size(*square) + 1);
+			return (req_function(square, tetra_head(tmp), x, y));
+		}
+		return (0);
+	}
+}
+
+int		specialagent(char ***square, t_tetra **tmp, int x, int y)
+{
+	int n;
+
+	n = size(*square);
+	if ((*tmp)->next)
+	{
+		x = 0;
+		y = 0;
+		return (req_function(square, &(*tmp)->next, x, y));
+	}
+	return (1);
+}
+
+int		find_min_square(char ***square, t_tetra **elem)
 {
 	t_tetra			**tmp;
-	struct s_koord	my_koord;
+	int				x;
+	int				y;
 
-	my_koord.nbr = n;
+	x = 0;
+	y = 0;
 	tmp = elem;
-	my_koord.x = 0;
-	my_koord.y = 0;
 	if (*tmp)
 	{
-		req_function(square, tmp, &my_koord);
+		req_function(square, tmp, x, y);
 	}
-	return (my_koord.nbr);
+	return (size(*square));
 }

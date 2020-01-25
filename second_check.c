@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   second_check.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehell <ehell@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aguiller <aguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 14:17:54 by alexzudin         #+#    #+#             */
-/*   Updated: 2019/12/14 17:50:51 by ehell            ###   ########.fr       */
+/*   Updated: 2020/01/24 19:16:42 by aguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,36 @@
 int		read_to_mass(int fd, int count, t_tetra **head)
 {
 	t_tetra *now;
+	t_tetra *prev;
 	int		*mass;
 	char	s;
 
 	s = 'A';
+	prev = NULL;
 	if (!(mass = (int*)malloc(sizeof(int) * 8)))
 		return (0);
 	if (count > 0)
 	{
 		tomass(fd, &mass);
-		now = tetra_new(mass, s++, 8 * sizeof(int));
+		now = tetra_new(mass, s++, 8 * sizeof(int), prev);
 		*head = now;
 	}
 	while (count - 1 > 0)
 	{
+		prev = now;
 		tomass(fd, &mass);
-		now = tetra_add(now, tetra_new(mass, s, 8 * sizeof(int)));
+		now = tetra_add(now, tetra_new(mass, s, 8 * sizeof(int), prev));
 		count--;
 		s++;
 	}
 	free(mass);
-	mass = NULL;
 	return (1);
+}
+
+void	cln(char **s)
+{
+	if (*s)
+		ft_strdel(s);
 }
 
 void	tomass(int fd, int **mass)
@@ -62,10 +70,10 @@ void	tomass(int fd, int **mass)
 			j++;
 		}
 		i++;
+		cln(&s);
 	}
 	get_next_line(fd, &s);
-	if (s)
-		ft_strdel(&s);
+	cln(&s);
 }
 
 void	find_minimal(int **mass)
@@ -96,34 +104,26 @@ void	find_minimal(int **mass)
 	}
 }
 
-int		make_minimal(t_tetra **head)
-{
-	int		*mass;
-	t_tetra	*now;
-
-	now = *head;
-	while (now != NULL)
-	{
-		mass = (int*)now->data;
-		find_minimal(&mass);
-		now = now->next;
-		mass = NULL;
-	}
-	return (1);
-}
-
 int		second_check(int fd, int count)
 {
 	t_tetra	*head;
+	t_tetra *now;
 
 	head = NULL;
 	if (read_to_mass(fd, count, &head) == 0)
 		return (0);
 	close(fd);
-	if (make_minimal(&head) == 0)
+	make_minimal(&head);
+	now = head;
+	if (diagonal_check(now) == 0)
+	{
+		tetradel(&head);
+		free(head);
 		return (0);
-	if (diagonal_check(&head) == 0)
-		return (0);
+	}
 	solver(&head);
+	tetradel(&head);
+	free(head);
+	head = NULL;
 	return (1);
 }
